@@ -1,8 +1,10 @@
 package org.esupportail.catapp.admin.web.config;
 
+import org.esupportail.catapp.admin.domain.config.DomainConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -13,6 +15,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 @Configuration
+@Import({ DomainConfig.class })
 public class ContextConfig {
 
     @Bean
