@@ -5,6 +5,7 @@
     <groupId>org.esupportail</groupId>
     <artifactId>catapp-admin</artifactId>
     <version>0.1.1-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <repositories>
         <repository>
