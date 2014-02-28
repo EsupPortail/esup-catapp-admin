@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <p:outputPanel id="selectDomainesModalWrapper">
+        <div id="selectDomainesModal" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <p:outputPanel id="domainesModalContent" styleClass="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#{msgs['MENU.APPLICATIONS.APPLICATION.DOMAINS.TITLE']}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p:tree id="domainTree"
+                                value="#{applicationController.treeNode}"
+                                var="node" datakey="#{node.code}"
+                                selectionMode="multiple"
+                                propagateSelectionDown="false"
+                                propagateSelectionUp="false"
+                                selection="#{applicationController.selectedNodes}">
+                            <p:ajax event="select" listener="#{applicationController.onSelectNode}" />
+                            <p:ajax event="unselect" listener="#{applicationController.onUnSelectNode}" />
+
+                            <p:treeNode>
+                                <h:outputText value="#{node.caption}" />
+                            </p:treeNode>
+                        </p:tree>
+                    </div>
+                    <div class="modal-footer">
+                        <p:commandLink id="validateButton" value="#{msgs['ACTION.VALIDATE']}" styleClass="btn btn-sm btn-primary" oncomplete="$('.modal-backdrop').remove();$('body').removeClass('modal-open');$('#selectDomainesModal').modal('hide');" update="@form" partialSubmit="true" immediate="true"  />
+                        <p:commandLink value="#{msgs['ACTION.CANCEL']}" styleClass="btn btn-sm btn-default" onclick="$('.modal-backdrop').remove();$('body').removeClass('modal-open');$('#selectDomainesModal').modal('hide');" title="#{msgs['ACTION.CANCEL']}" immediate="true" />
+
+                        <p:blockUI block=":catappform:domainesModalContent" trigger="validateButton">
+                            <p:graphicImage library="img" name="wait.gif" />
+                        </p:blockUI>
+                    </div>
+                </p:outputPanel>
+            </div>
+        </div>
+    </p:outputPanel>
+</ui:composition>

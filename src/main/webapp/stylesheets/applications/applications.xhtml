@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/stylesheets/template.xhtml">
+    <ui:define name="content">
+
+        <ui:include src="select_domaines.xhtml" />
+        <ui:include src="confirm_suppression.xhtml" />
+
+        <p:outputPanel id="panel" styleClass="panel panel-default" layout="block">
+            <div class="panel-heading">
+                <div class="h2">
+                    #{msgs['MENU.APPLICATIONS.TITLE']}
+                    <div class="pull-right" style="margin-top: 10px;">
+                        <p:autoComplete id="autocompleteApps"
+                                        emptyMessage="#{msgs['MESSAGE.INFO.APPLICATION.NO_RESULT']}"
+                                        value="#{applicationController.originalPojo}" forceSelection="true"
+                                        converter="#{applicationController.applicationConverter}"
+                                        completeMethod="#{applicationController.filter}"
+                                        styleClass="input-sm"
+                                        var="app" itemLabel="#{app.itemLabel}" itemValue="#{app}"
+                                        placeholder="#{msgs['ACTION.SEARCH']}">
+                            <p:ajax event="itemSelect" listener="#{applicationController.onSelectApplication}" update="panel"
+                                    resetValues="true" />
+                        </p:autoComplete>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <p:outputLabel for="codeApp" styleClass="col-md-2 control-label" value="#{msgs['MENU.APPLICATIONS.APPLICATION.CODE']}" />
+                    <div class="col-md-10">
+                        <p:inputText id="codeApp" required="true"
+                                     value="#{applicationController.pojo.code}"
+                                     label="#{msgs['MENU.APPLICATIONS.APPLICATION.CODE']}"
+                                     maxlength="20" size="15" styleClass="form-control input-sm" />
+                        <p:message for="codeApp" display="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="titreApp" styleClass="col-md-2 control-label" value="#{msgs['MENU.APPLICATIONS.APPLICATION.TITLE']}" />
+                    <div class="col-md-10">
+                        <p:inputText id="titreApp" required="true" value="#{applicationController.pojo.titre}" label="#{msgs['MENU.APPLICATIONS.APPLICATION.TITLE']}" maxlength="200" size="15" styleClass="form-control input-sm" />
+                        <p:message for="titreApp" display="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="libelleApp" styleClass="col-md-2 control-label" value="#{msgs['MENU.APPLICATIONS.APPLICATION.TEXT']}" />
+                    <div class="col-md-10">
+                        <p:inputText id="libelleApp" value="#{applicationController.pojo.libelle}" label="#{msgs['MENU.APPLICATIONS.APPLICATION.TEXT']}" maxlength="200" size="15" styleClass="form-control input-sm" />
+                        <p:message for="libelleApp" display="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="urlApp" styleClass="col-md-2 control-label" value="#{msgs['MENU.APPLICATIONS.APPLICATION.URL']}" />
+                    <div class="col-md-10">
+                        <p:inputText id="urlApp" required="true" value="#{applicationController.pojo.url}" label="#{msgs['MENU.APPLICATIONS.APPLICATION.URL']}" maxlength="1000" size="15" styleClass="form-control input-sm" />
+                        <p:message for="urlApp" display="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="groupeApp" styleClass="col-md-2 control-label" value="#{msgs['MENU.APPLICATIONS.APPLICATION.GROUP']}" />
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <p:inputText id="groupeApp" required="true" value="#{applicationController.pojo.groupe}" label="#{msgs['MENU.APPLICATIONS.APPLICATION.GROUP']}" maxlength="200" size="15" styleClass="form-control input-sm" />
+                            <span class="input-group-btn">
+                                <a href="#{applicationController.groupHelpUrl}" class="btn btn-default btn-sm" target="_blank" title="#{msgs['MESSAGE.HELP']}"><i class="fa fa-question-circle" /></a>
+                            </span>
+                        </div>
+                        <p:message for="groupeApp" display="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="accessibiliteApp" styleClass="col-md-2 control-label" value="#{msgs['MENU.APPLICATIONS.APPLICATION.ACTIVATION']}" />
+                    <div class="col-md-10">
+                        <p:selectBooleanCheckbox id="accessibiliteApp"  value="#{applicationController.pojo.accessibilite}" label="#{msgs['MENU.APPLICATIONS.APPLICATION.ACTIVATION']}" styleClass="form-control-static input-sm" />
+                        <p:message for="accessibiliteApp" display="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="ui-outputlabel ui-widget col-md-2 control-label">#{msgs['MENU.APPLICATIONS.APPLICATION.DOMAINS']}</label>
+
+                    <div class="col-md-10">
+                        <p:commandLink id="showDomainsLink" styleClass="btn btn-default pull-left" immediate="true"
+                                       actionListener="#{applicationController.setNodesSelected}"
+                                       oncomplete="$('#selectDomainesModal').modal({backdrop:'static'});" >
+                            <i class="fa fa-sitemap fa-rotate-270" />
+                        </p:commandLink>
+                        <ui:repeat value="#{applicationController.selectedDomaines}" var="dom">
+                            <span class="label label-info pull-left" title="#{dom.libelle}">#{dom.libelle}</span>
+                        </ui:repeat>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="descApp" styleClass="col-md-2 control-label" value="#{msgs['MENU.APPLICATIONS.APPLICATION.DESCRIPTION']}" />
+                    <div class="col-md-10">
+                        <p:editor id="descApp" value="#{applicationController.pojo.description}" maxlength="3000" />
+                        <p:message for="descApp" display="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer clearfix">
+                <div class="pull-right">
+                    <pe:switch value="#{empty applicationController.pojo.code}">
+                        <pe:defaultCase>
+                            <!-- Création -->
+                            <p:commandLink value="#{msgs['ACTION.CREATE']}" title="#{msgs['ACTION.CREATE']}" action="#{applicationController.create}"
+                                           styleClass="btn btn-sm btn-primary" partialSubmit="true" update="@form"
+                                           validateClient="true" />
+                            <p:commandLink value="#{msgs['ACTION.CANCEL']}" title="#{msgs['ACTION.CANCEL']}" partialSubmit="true"
+                                           update="@form" resetValues="true" immediate="true"
+                                           styleClass="btn btn-sm btn-default" />
+                        </pe:defaultCase>
+                        <pe:case value="#{false}">
+                            <!-- MAJ -->
+                            <div class="btn-group">
+                                <p:commandLink value="#{msgs['ACTION.UPDATE']}" title="#{msgs['ACTION.UPDATE']}" action="#{applicationController.update}"
+                                               styleClass="btn btn-sm btn-primary" partialSubmit="true" update="@form" />
+                                <p:commandLink value="#{msgs['ACTION.CANCEL']}" title="#{msgs['ACTION.CANCEL']}" partialSubmit="true"
+                                               update="@form" resetValues="true" immediate="true"
+                                               styleClass="btn btn-sm btn-default" />
+                            </div>
+
+                            <div class="btn-group">
+                            <p:commandLink value="#{msgs['ACTION.DELETE']}" title="#{msgs['ACTION.DELETE']}" immediate="true"
+                                           styleClass="btn btn-sm btn-danger" oncomplete="$('#confirmSuppModal').modal({backdrop:'static'});" />
+                            </div>
+                        </pe:case>
+                    </pe:switch>
+                </div>
+            </div>
+        </p:outputPanel>
+
+    </ui:define>
+</ui:composition>

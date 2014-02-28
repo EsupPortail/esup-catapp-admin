@@ -1,9 +1,9 @@
 package org.esupportail.catapp.admin.domain.beans;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.esupportail.catapp.admin.domain.enums.Activation;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -11,98 +11,72 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationDTO implements Serializable {
 
-    private Integer pk;
     private String code;
-    private String titre;
-    private String libelle;
+    private String title;
+    private String caption;
     private String description;
     private String url;
-    private String groupe;
-    private Boolean visible;
-    private List<String> domaines;
+    private String group;
+    private Activation activation;
+    private List<String> domains;
 
-    private ApplicationDTO(final String code, final String titre, final String libelle, final String description,
-                          final String url, final String groupe, final boolean visible, final String... domaines) {
+    private ApplicationDTO(final String code, final String title, final String caption, final String description,
+                          final String url, final String group, final Activation activation, final String... domains) {
         this.code = code;
-        this.titre = titre;
-        this.libelle = libelle;
+        this.title = title;
+        this.caption = caption;
         this.description = description;
         this.url = url;
-        this.groupe = groupe;
-        this.visible = visible;
-        this.domaines = asList(domaines);
+        this.group = group;
+        this.activation = activation;
+        this.domains = asList(domains);
     }
+
+
 
     @JsonCreator
     public static ApplicationDTO applicationDTO(@JsonProperty("code") final String code,
-                                                @JsonProperty("titre") final String titre,
-                                                @JsonProperty("libelle") final String libelle,
+                                                @JsonProperty("title") final String title,
+                                                @JsonProperty("caption") final String caption,
                                                 @JsonProperty("description") final String description,
                                                 @JsonProperty("url") final String url,
-                                                @JsonProperty("groupe") final String groupe,
-                                                @JsonProperty("visible") final boolean visible,
-                                                @JsonProperty("domaines") final String... domaines) {
-        return new ApplicationDTO(code, titre, libelle, description, url, groupe, visible, domaines);
-    }
-
-    public Integer getPk() {
-        return pk;
+                                                @JsonProperty("group") final String group,
+                                                @JsonProperty("activation") final Activation activation,
+                                                @JsonProperty("domains") final String... domains) {
+        return new ApplicationDTO(code, title, caption, description, url, group, activation, domains);
     }
 
     public String getCode() {
         return code;
     }
 
-    public String getTitre() {
-        return titre;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getLibelle() {
-        return libelle;
+    public String getTitle() {
+        return title;
+    }
+
+    public ApplicationDTO setTitle(final String title) {
+        this.title = title;
+        return this;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public ApplicationDTO setCaption(final String caption) {
+        this.caption = caption;
+        return this;
     }
 
     public String getDescription() {
         return description;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public String getGroupe() {
-        return groupe;
-    }
-
-    public Boolean getVisible() {
-        return visible;
-    }
-
-    public List<String> getDomaines() {
-        return Collections.unmodifiableList(domaines);
-    }
-
-    public ApplicationDTO setPk(final Integer pk) {
-        this.pk = pk;
-        return this;
-    }
-
-    public ApplicationDTO setCode(final String code) {
-        this.code = code;
-        return this;
-    }
-
-    public ApplicationDTO setTitre(final String titre) {
-        this.titre = titre;
-        return this;
-    }
-
-    public ApplicationDTO setLibelle(final String libelle) {
-        this.libelle = libelle;
-        return this;
     }
 
     public ApplicationDTO setDescription(final String description) {
@@ -110,23 +84,53 @@ public class ApplicationDTO implements Serializable {
         return this;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
     public ApplicationDTO setUrl(String url) {
         this.url = url;
         return this;
     }
 
-    public ApplicationDTO setGroupe(String groupe) {
-        this.groupe = groupe;
+    public String getGroup() {
+        return group;
+    }
+
+    public ApplicationDTO setGroup(String group) {
+        this.group = group;
         return this;
     }
 
-    public ApplicationDTO setVisible(Boolean visible) {
-        this.visible = visible;
+    public Activation getActivation() {
+        return activation;
+    }
+
+    public ApplicationDTO setActivation(Activation activation) {
+        this.activation = activation;
         return this;
     }
 
-    public ApplicationDTO setDomaines(String... domaines) {
-        this.domaines = asList(domaines);
+    public List<String> getDomains() {
+        return Collections.unmodifiableList(domains);
+    }
+
+    public ApplicationDTO setDomains(String... domains) {
+        this.domains = asList(domains);
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "ApplicationDTO{" +
+                "code='" + code + '\'' +
+                ", title='" + title + '\'' +
+                ", caption='" + caption + '\'' +
+                ", description='" + description + '\'' +
+                ", url='" + url + '\'' +
+                ", group='" + group + '\'' +
+                ", activation=" + activation +
+                ", domains=" + domains +
+                '}';
     }
 }

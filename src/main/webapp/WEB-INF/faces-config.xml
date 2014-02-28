@@ -8,7 +8,22 @@
     <!-- intégration JSF / Spring -->
     <application>
         <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+        <locale-config>
+            <default-locale>fr</default-locale>
+            <supported-locale>fr</supported-locale>
+            <supported-locale>en</supported-locale>
+        </locale-config>
+        <message-bundle>properties/i18n/JsfMessages</message-bundle>
+        <resource-bundle>
+            <base-name>properties/i18n/Messages</base-name>
+            <var>msgs</var>
+        </resource-bundle>
     </application>
+    <factory>
+        <exception-handler-factory>org.esupportail.catapp.admin.web.exceptions.ExceptionHandlerFactory</exception-handler-factory>
+    </factory>
+
+
     <!-- Messages JSF persistants de page en page -->
     <lifecycle>
         <phase-listener>org.esupportail.catapp.admin.web.utils.jsf.MultiPageMessagesSupport</phase-listener>

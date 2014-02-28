@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="false" monitoring="autodetect"
+         dynamicConfig="true">
+
+    <diskStore path="java.io.tmpdir" />
+
+    <defaultCache maxElementsInMemory="50" eternal="false"
+                  overflowToDisk="false" memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="mailCache" eternal="false" maxElementsInMemory="1000"
+           overflowToDisk="true" diskPersistent="false" timeToIdleSeconds="0"
+           timeToLiveSeconds="60" memoryStoreEvictionPolicy="LRU" />
+
+</ehcache>

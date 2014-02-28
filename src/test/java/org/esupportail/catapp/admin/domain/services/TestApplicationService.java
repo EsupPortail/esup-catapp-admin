@@ -28,14 +28,14 @@ public class TestApplicationService {
     @Test
     public void getApplication() throws Exception {
         final String code = "SIFAC-T04";
-        final Option<ApplicationDTO> app = fromNull(mockApplicationService.getApplication(code));
+        final Option<ApplicationDTO> app = fromNull(mockApplicationService.getOne(code));
 
         assertTrue(format("applicaton with code [%s] does not exists!", code), app.isSome());
     }
 
     @Test
     public void getApplications() throws Exception {
-        final List<ApplicationDTO> apps = mockApplicationService.getApplications();
+        final List<ApplicationDTO> apps = mockApplicationService.getList();
 
         assertFalse("applicatons list is empty", apps.isEmpty());
     }

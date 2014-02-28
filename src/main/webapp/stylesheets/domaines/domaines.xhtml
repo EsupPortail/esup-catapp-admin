@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/stylesheets/template.xhtml">
+    <ui:define name="content">
+        <ui:include src="modal.xhtml" />
+
+        <p:contextMenu id="contextualMenu" for="domainTree">
+            <p:menuitem value="#{msgs['ACTION.ADD']}" icon="ui-icon-plus"
+                        actionListener="#{domaineController.onCreate}"
+                        oncomplete="$('#domainesModal').modal({backdrop:'static'});">
+                <f:setPropertyActionListener value="ADD" target="#{domaineController.useCase}" />
+            </p:menuitem>
+            <p:menuitem value="#{msgs['ACTION.MODIFY']}" icon="ui-icon-pencil"
+                        oncomplete="$('#domainesModal').modal({backdrop:'static'});">
+                <f:setPropertyActionListener value="UPDATE" target="#{domaineController.useCase}" />
+            </p:menuitem>
+            <p:menuitem value="#{msgs['ACTION.DELETE']}" icon="ui-icon-close"
+                        oncomplete="$('#domainesModal').modal({backdrop:'static'});">
+                <f:setPropertyActionListener value="DELETE" target="#{domaineController.useCase}" />
+            </p:menuitem>
+        </p:contextMenu>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="h2">
+                    #{msgs['MENU.DOMAINS.TITLE']}
+                </div>
+            </div>
+            <div class="panel-body">
+                <p:tree id="domainTree"
+                        value="#{domaineController.treeNode}"
+                        var="node"
+                        selectionMode="single"
+                        selection="#{domaineController.selectedNode}">
+                    <p:ajax event="select" listener="#{domaineController.onSelectNode}" />
+
+                    <p:treeNode>
+                        <h:outputText value="#{node.caption}" />
+                    </p:treeNode>
+                </p:tree>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

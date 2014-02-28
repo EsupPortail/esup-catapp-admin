@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <p:outputPanel id="modalWrapper" layout="block">
+        <div id="domainesModal" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <p:outputPanel id="modalContent" styleClass="modal-content" autoUpdate="true">
+                    <div class="modal-header">
+                        <pe:switch value="#{domaineController.useCase}">
+                            <pe:defaultCase>#{domaineController.useCase}</pe:defaultCase>
+                            <pe:case value="ADD">
+                                <h4 class="modal-title">#{msgs['MENU.DOMAINS.DOMAIN.CREATION.TITLE']}</h4>
+                            </pe:case>
+                            <pe:case value="UPDATE">
+                                <h4 class="modal-title">#{msgs['MENU.DOMAINS.DOMAIN.UPDATE.TITLE']}</h4>
+                            </pe:case>
+                            <pe:case value="DELETE">
+                                <h4 class="modal-title">#{msgs['MENU.DOMAINS.DOMAIN.DELETE.TITLE']}</h4>
+                            </pe:case>
+                        </pe:switch>
+                    </div>
+                    <div class="modal-body">
+                        <pe:switch id="switchModalBody" value="#{domaineController.useCase}">
+                            <pe:defaultCase id="defaultBody">
+                                <div class="form-group">
+                                    <p:outputLabel for="codeDomaine" styleClass="col-md-2 control-label" value="#{msgs['MENU.DOMAINS.DOMAIN.CODE']}" />
+                                    <div class="col-md-10">
+                                        <p:inputText id="codeDomaine" required="true" value="#{domaineController.pojo.code}" label="#{msgs['MENU.DOMAINS.DOMAIN.CODE']}" maxlength="20" size="15" styleClass="form-control input-sm" disabled="#{domaineController.useCase eq 'UPDATE' and empty domaineController.pojo.parent}" />
+                                        <p:message for="codeDomaine" display="text" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <p:outputLabel for="libelleDomaine" styleClass="col-md-2 control-label" value="#{msgs['MENU.DOMAINS.DOMAIN.TEXT']}" />
+                                    <div class="col-md-10">
+                                        <p:inputText id="libelleDomaine" required="true" value="#{domaineController.pojo.libelle}" label="#{msgs['MENU.DOMAINS.DOMAIN.TEXT']}" maxlength="200" styleClass="form-control input-sm" />
+                                        <p:message for="libelleDomaine" display="text" />
+                                    </div>
+                                </div>
+                            </pe:defaultCase>
+                            <pe:case  value="DELETE">
+                                <ui:fragment rendered="#{domaineController.pojo.deletable}">
+                                    #{msgs['MESSAGE.CONFIRM.DELETION.DOMAIN']}
+                                </ui:fragment>
+                                <ui:fragment rendered="#{!domaineController.pojo.deletable}">
+                                    #{msgs['MESSAGE.INFO.DELETION.DOMAIN']}
+                                </ui:fragment>
+                            </pe:case>
+                        </pe:switch>
+                    </div>
+                    <div class="modal-footer">
+                        <pe:switch value="#{domaineController.useCase}">
+                            <pe:defaultCase></pe:defaultCase>
+                            <pe:case value="ADD">
+                                <p:commandLink id="addButton" value="#{msgs['ACTION.CREATE']}" action="#{domaineController.create}"
+                                               styleClass="btn btn-sm btn-primary" partialSubmit="true"
+                                               oncomplete="$('.modal-backdrop').remove();$('body').removeClass('modal-open');$('#domainesModal').modal({backdrop:'static'});"
+                                               validateClient="true" />
+                                <p:commandLink value="#{msgs['ACTION.CANCEL']}" action="#{domaineController.cancel}"
+                                               styleClass="btn btn-sm btn-default" immediate="true" />
+
+                                <p:blockUI block=":catappform:modalContent" trigger="addButton">
+                                    <p:graphicImage library="img" name="wait.gif" />
+                                </p:blockUI>
+                            </pe:case>
+                            <pe:case value="UPDATE">
+                                <p:commandLink id="updateButton" value="#{msgs['ACTION.UPDATE']}" action="#{domaineController.update}"
+                                               styleClass="btn btn-sm btn-primary"
+                                               oncomplete="$('.modal-backdrop').remove();$('body').removeClass('modal-open');$('#domainesModal').modal({backdrop:'static'});"
+                                               validateClient="true" />
+                                <p:commandLink value="#{msgs['ACTION.CANCEL']}" action="#{domaineController.cancel}"
+                                               styleClass="btn btn-sm btn-default" immediate="true" />
+
+                                <p:blockUI block=":catappform:modalContent" trigger="updateButton">
+                                    <p:graphicImage library="img" name="wait.gif" />
+                                </p:blockUI>
+                            </pe:case>
+                            <pe:case value="DELETE">
+                                <ui:fragment rendered="#{domaineController.pojo.deletable}">
+                                    <p:commandLink id="deleteButton" value="#{msgs['ACTION.DELETE']}" action="#{domaineController.delete}"
+                                                   styleClass="btn btn-sm btn-danger"
+                                                   oncomplete="$('.modal-backdrop').remove();$('body').removeClass('modal-open');$('#domainesModal').modal({backdrop:'static'});"
+                                                   validateClient="true" />
+                                    <p:commandLink value="#{msgs['ACTION.CANCEL']}" action="#{domaineController.cancel}"
+                                                   styleClass="btn btn-sm btn-default" immediate="true" />
+                                    <p:blockUI block=":catappform:modalContent" trigger="deleteButton">
+                                        <p:graphicImage library="img" name="wait.gif" />
+                                    </p:blockUI>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{!domaineController.pojo.deletable}">
+                                    <p:commandLink value="#{msgs['ACTION.CANCEL']}" action="#{domaineController.cancel}"
+                                                   styleClass="btn btn-sm btn-default" immediate="true" />
+                                </ui:fragment>
+                            </pe:case>
+                        </pe:switch>
+
+                    </div>
+                </p:outputPanel>
+            </div>
+        </div>
+    </p:outputPanel>
+</ui:composition>

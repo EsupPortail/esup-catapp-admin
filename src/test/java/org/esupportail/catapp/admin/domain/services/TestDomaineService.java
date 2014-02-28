@@ -27,14 +27,14 @@ public class TestDomaineService {
     @Test
     public void getDomaine() throws Exception {
         final String code = "ROOT";
-        final Option<DomaineDTO> domain = fromNull(mockDomaineService.getDomaine(code));
+        final Option<DomaineDTO> domain = fromNull(mockDomaineService.getOne(code));
 
         assertTrue(format("domain with code [%s] does not exists!", code), domain.isSome());
     }
 
     @Test
     public void getDomaines() throws Exception {
-        final List<DomaineDTO> domains = mockDomaineService.getDomaines();
+        final List<DomaineDTO> domains = mockDomaineService.getList();
 
         assertFalse("domains list is empty", domains.isEmpty());
     }

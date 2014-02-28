@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <p:outputPanel id="confirmSuppModalWrapper">
+        <div id="confirmSuppModal" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <p:outputPanel id="confirmSuppModalContent" styleClass="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">#{msgs['MENU.APPLICATIONS.APPLICATION.DELETE.TITLE']}</h4>
+                    </div>
+                    <div class="modal-body">#{msgs['MESSAGE.CONFIRM.DELETION.APPLICATION']}</div>
+                    <div class="modal-footer">
+                        <p:commandLink id="deleteButton" value="#{msgs['ACTION.DELETE']}" action="#{applicationController.delete}"
+                                       styleClass="btn btn-sm btn-danger" immediate="true"
+                                       oncomplete="$('.modal-backdrop').remove();$('body').removeClass('modal-open');$('#confirmSuppModal').modal({backdrop:'static'});" />
+                        <p:commandLink value="#{msgs['ACTION.CANCEL']}" oncomplete="$('#confirmSuppModal').modal('hide');"
+                                       styleClass="btn btn-sm btn-default" immediate="true" />
+                        <p:blockUI block=":catappform:confirmSuppModalContent" trigger="deleteButton">
+                            <p:graphicImage library="img" name="wait.gif" />
+                        </p:blockUI>
+                    </div>
+                </p:outputPanel>
+            </div>
+        </div>
+    </p:outputPanel>
+</ui:composition>

@@ -1,0 +1,121 @@
+= Guide d{apos}installation et de configuration de l{apos}application ``Catalogue des applications - Administration''
+Auteurs <dsi-devq@listes.univ-rennes1.fr>
+:toc2:
+:toclevels: 5
+:toc-title: Sommaire
+
+== 1. Prérequis
+* JDK 1.7
+* Tomcat 7
+* Services REST du catalogue des applications installés en version 0.1.0
+
+== 2. Récupération de l{apos}archive de l{apos}application
+L{apos}application est packagée et déposée sur un dépôt centralisé disponible https://mvn.esup-portail.org/content/repositories/releases/org/esupportail/catapp-admin/<version.application>/catapp-admin-<version.application>.war[ici]
+
+où [small]+<version.application>+ correspond à la version de l'application à installer (ex: 0.1.0).
+
+== 3. Adapter le fichier config.properties
+L{apos}application dispose d{apos}un fichier de configuration qu{apos}il convient d{apos}adapter afin que l{apos}application s{apos}exécute, par exemple, dans un contexte de production ou de recette.
+Ce fichier doit être passé en paramètre du serveur d{apos}applications grâce à la variable [small]+-Dconfig.location+
+
+[cols="1,2,1,2", options="header"]
+|===
+| Paramètre
+| Description
+| Version
+| Exemple
+
+| rest.service.url
+| URL des services REST du catalogue des applications
+| 0.1.0
+| \http://localhost:8080
+
+| group.help.url
+| URL pointant vers une page d'aide à l'obtention d'un groupe Grouper
+| 0.1.0
+| \http://monserveur/gouper-ui/
+
+| smtp.host
+| Serveur SMTP
+| 0.3.0
+| smtp.univ-rennes1.fr
+
+| smtp.user
+| Utilisateur avec lequel se connecter au serveur SMTP
+| 0.3.0
+|
+
+| smtp.password
+| Mot de passe de l'utilisateur avec lequel se connecter au serveur SMTP
+| 0.3.0
+|
+
+| smtp.fromEmail
+| Adresse email envoyant les messages
+| 0.3.0
+| \dsi-si-snum@listes.univ-rennes1.fr
+
+| smtp.fromName
+| Nom associé à l'adresse email envoyant les messages
+| 0.3.0
+| Equipe SNUM
+
+| smtp.interceptAll
+| Intercepter tous les messages ?
+| 0.3.0
+| false
+
+| smtp.interceptEmail
+| Adresse email vers laquelle renvoyer les messages interceptés
+| 0.3.0
+|
+
+| smtp.interceptName
+| Nom associé à l'adresse email vers laquelle renvoyer les messages interceptés
+| 0.3.0
+|
+
+| smtp.port
+| Port SMTP
+| 0.3.0
+| 25
+
+| exceptionHandling.email
+| Adresse email vers laquelle renvoyer les exceptions
+| 0.3.0
+|
+|===
+
+== 3. Personnalisation du niveau de log de l{apos}application
+Il est possible de personnaliser le niveau de log de l{apos}application en positionnant, sur la ligne de commande, la variable [small]+-Dlog4j.configuration+.
+
+Exemple : [small]+file:/usr/share/config/log4j.properties+
+
+== 4. Personnalisation du fichier log4j.properties
+[cols="1,2,1,2", options="header"]
+|===
+| Paramètre
+| Description
+| Version
+| Exemple
+
+| log4j.rootCategory
+| Définit le niveau de gravité WARN pour le logger racine et lui associe un logger nommé arbitrairement stdout. Par héritage, tous les loggers de l{apos}application vont hériter de cette configuration.
+| 0.1.0
+| WARN, stdout
+
+| log4j.appender.stdout
+| L{apos}appender nommé stdout est de type log4j.appender : Effectue la journalisation vers la console
+| 0.1.0
+| org.apache.log4j.appender
+
+| log4j.appender.stdout.layout
+| Met en forme les différents événements de journalisation
+| 0.1.0
+| org.apache.log4j.PatternLayout
+
+| log4j.appender.stdout.layout.ConversionPattern
+| Spécifie le format de log à générer
+| 0.1.0
+| %d %p [%c] - %m%n
+|===
