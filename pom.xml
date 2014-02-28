@@ -4,7 +4,7 @@
 
     <groupId>org.esupportail</groupId>
     <artifactId>catapp-admin</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
 
     <repositories>
         <repository>
@@ -51,7 +51,7 @@
         <connection>scm:git:ssh://git@github.com/EsupPortail/esup-catapp-admin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/EsupPortail/esup-catapp-admin.git</developerConnection>
         <url>https://github.com/EsupPortail/esup-catapp-admin</url>
-        <tag>0.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
