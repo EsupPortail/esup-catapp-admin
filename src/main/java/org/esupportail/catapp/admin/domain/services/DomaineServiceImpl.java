@@ -5,20 +5,19 @@ import fj.data.List;
 import fj.data.Stream;
 import fj.data.Tree;
 import org.esupportail.catapp.admin.domain.beans.DomaineDTO;
-import org.esupportail.catapp.admin.domain.enums.Exists;
+import org.esupportail.catapp.admin.domain.beans.Exists;
 import org.esupportail.catapp.admin.domain.exceptions.CrudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static fj.Equal.stringEqual;
 import static fj.Function.curry;
+import static fj.Ord.ord;
 import static fj.Ord.stringOrd;
 import static fj.P.p;
 import static fj.data.Array.array;
@@ -40,7 +39,7 @@ public class DomaineServiceImpl extends AbstractService implements IDomaineServi
     @Override
     public boolean exists(final String code) throws InterruptedException {
         try {
-            return restDomainesService.path(code).path("exists").request().get(Exists.class).value();
+            return restDomainesService.path(code).path("exists").request().get(Exists.class).exists();
         } catch (Exception e) {
             log.error("error in exists", e);
             throw new InterruptedException(e.getMessage());
@@ -152,7 +151,7 @@ public class DomaineServiceImpl extends AbstractService implements IDomaineServi
                             });
                         }
                     };
-                    return p(root, children);
+                    return p(root, p(children._1().sort(ord(curry(ordering)))));
                 }
             });
             return treeFunc.f(domaines.orHead(p(domaineDTO("","",""))));

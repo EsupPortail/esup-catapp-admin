@@ -4,7 +4,7 @@ import fj.F2;
 import fj.Ordering;
 import fj.data.List;
 import org.esupportail.catapp.admin.domain.beans.ApplicationDTO;
-import org.esupportail.catapp.admin.domain.enums.Exists;
+import org.esupportail.catapp.admin.domain.beans.Exists;
 import org.esupportail.catapp.admin.domain.exceptions.CrudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class ApplicationServiceImpl extends AbstractService implements IApplicat
     @Override
     public boolean exists(final String code) throws InterruptedException {
         try {
-            return restApplicationsService.path(code).path("exists").request().get(Exists.class).value();
+            return restApplicationsService.path(code).path("exists").request().get(Exists.class).exists();
         } catch (Exception e) {
             log.error("error in exists", e);
             throw new InterruptedException(e.getMessage());
