@@ -80,6 +80,13 @@ body {
     text-overflow: ellipsis;
 }
 
+.url {
+    max-width: 200px!important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .panel-body {
     padding-top: 30px;
 }

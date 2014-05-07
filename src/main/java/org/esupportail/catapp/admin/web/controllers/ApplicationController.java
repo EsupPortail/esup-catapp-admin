@@ -12,7 +12,9 @@ import org.esupportail.catapp.admin.domain.services.IApplicationService;
 import org.esupportail.catapp.admin.domain.services.IDomaineService;
 import org.esupportail.catapp.admin.web.pojo.ApplicationPojo;
 import org.esupportail.catapp.admin.web.pojo.DomainePojo;
+import org.esupportail.catapp.admin.web.utils.Transform;
 import org.esupportail.catapp.admin.web.utils.fj.PatchedTreeZipper;
+import org.esupportail.catapp.admin.web.utils.jsf.CustomTreeNode;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.NodeUnselectEvent;
@@ -20,17 +22,19 @@ import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static fj.P.p;
 import static fj.data.Array.*;
-import static fj.data.Option.fromNull;
-import static fj.data.Option.fromString;
+import static fj.data.Option.*;
 import static fj.data.Stream.iterableStream;
 import static java.text.Normalizer.Form.NFD;
 import static java.text.Normalizer.normalize;
@@ -49,13 +53,21 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
     @Value("${group.help.url}")
     private String groupHelpUrl;
 
-    public static final String APPS_URI = "/stylesheets/applications/applications.xhtml?faces-redirect=true";
+    private List<ApplicationPojo> allApplications;
+
+    private List<ApplicationPojo> applications;
+
+    private Map<String, DomainePojo> domains;
+
+    private String filterQuery = "";
+
+    public static final String APPS_URI = "/stylesheets/applications/list.xhtml?faces-redirect=true";
 
     private ApplicationController(final IApplicationService applicationService, final IDomaineService domaineService) {
         super(applicationService);
         this.domaineService = domaineService;
-        this.pojo = new ApplicationPojo();;
-        this.originalPojo = new ApplicationPojo();;
+        this.pojo = new ApplicationPojo();
+        this.originalPojo = new ApplicationPojo();
         this.treeNode = buildTreeNode(domaineService);
         iterableArray(this.treeNode.getChildren()).foreach(new Effect<TreeNode>() {
             public void e(TreeNode treeNode) {
@@ -124,7 +136,7 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
             final FacesMessage facesMessage = new FacesMessage(SEVERITY_INFO, summary, detail);
             facesContext.addMessage(null, facesMessage);
 
-            return APPS_URI;
+            return null;
         } catch (InterruptedException e) {
             facesContext.addMessage(null, serviceUnavailableMsg);
         } catch (CrudException e) {
@@ -161,24 +173,49 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
         return null;
     }
 
-    public List<ApplicationPojo> filter(final String query) {
+    public void filter() {
         final F<String, String> sansAccents = new F<String, String>() {
             public String f(String s) {
                 return normalize(s, NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
             }
         };
-
-        return new ArrayList<>(iterableArray(getApplications()).filter(new F<ApplicationPojo, Boolean>() {
-            public Boolean f(ApplicationPojo app) {
-                final String check = sansAccents.f(app.getItemLabel().toLowerCase());
-                final String req = sansAccents.f(query.toLowerCase());
-                return check.contains(req);
+        applications = new ArrayList<>(iterableArray(getAllApplications()).filter(new F<ApplicationPojo, Boolean>() {
+            public Boolean f(final ApplicationPojo app) {
+                final String checkLabel = sansAccents.f(app.getItemLabel().toLowerCase());
+                final String req = sansAccents.f(filterQuery.toLowerCase());
+                final Array<DomainePojo> filteredDomains =
+                        iterableArray(getDomains().values()).filter(new F<DomainePojo, Boolean>() {
+                    public Boolean f(DomainePojo domPojo) {
+                        return sansAccents.f(domPojo.getLibelle().toLowerCase()).contains(req)
+                                && app.getDomaines().contains(domPojo.getCode());
+                    }
+                });
+                return req.equalsIgnoreCase("") || checkLabel.contains(req) || filteredDomains.isNotEmpty();
             }
         }).toCollection());
     }
 
-    public void onSelectApplication() {
-        setPojo(originalPojo);
+    public void initView() {
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        final String code = facesContext.getExternalContext().getRequestParameterMap().get("code");
+        final Option<ApplicationPojo> maybeApp = Option.join(fromString(code).map(new F<String, Option<ApplicationPojo>>() {
+            public Option<ApplicationPojo> f(String c) {
+                try {
+                    return fromNull(service.getOne(c)).map(applicationToPojo);
+                } catch (InterruptedException e) {
+                    return none();
+                }
+            }
+        }));
+
+        if (code != null) {
+            if (maybeApp.isNone()) {
+                redirect(APPS_URI);
+            }
+            this.pojo = maybeApp.some();
+            this.originalPojo = pojo;
+        }
+
     }
 
     public void onSelectNode(final NodeSelectEvent event) {
@@ -220,7 +257,6 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
                     final TreeNode node = childZip.focus().root();
                     node.setSelected(true);
                     nodes = nodes.append(single(node));
-                    break;
                 }
             }
         }
@@ -249,48 +285,51 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
         }).orSome(new String[0]))));
     }
 
-    ///////////////// JSF Convenience
+    private void redirect(final String outcome) {
+        final FacesContext context = FacesContext.getCurrentInstance();
 
-    public Converter getApplicationConverter() {
-        return new Converter() {
-            public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-                return fromString(value).map(new F<String, ApplicationPojo>() {
-                    public ApplicationPojo f(final String code) {
-                        final Option<ApplicationPojo> found = iterableArray(getApplications()).find(new F<ApplicationPojo, Boolean>() {
-                            public Boolean f(final ApplicationPojo app) {
-                                return app.getCode().equalsIgnoreCase(code);
-                            }
-                        });
-                        return found.orSome(new ApplicationPojo());
-                    }
-                }).orSome(new ApplicationPojo());
-            }
+        final NavigationHandler navHandler = context.getApplication().getNavigationHandler();
 
-            public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
-                return fromNull(value).map(new F<Object, String>() {
-                    public String f(Object o) {
-                        if (o instanceof  ApplicationPojo) {
-                            ApplicationPojo app = (ApplicationPojo) o;
-                            return app.getCode();
-                        }
-                        return "";
-                    }
-                }).orSome("");
-            }
-        };
+        navHandler.handleNavigation(context, null, outcome);
+        context.responseComplete();
     }
 
+    ///////////////// JSF Convenience
 
+    public List<ApplicationPojo> getAllApplications() {
+        if (allApplications == null) {
+            try {
+                allApplications = new ArrayList<>(service.getList().map(applicationToPojo).toCollection());
+            } catch (InterruptedException e) {
+                FacesContext.getCurrentInstance().addMessage(null, serviceUnavailableMsg);
+                return new ArrayList<>();
+            }
+        }
+        return allApplications;
+    }
 
     ///////////////// JSF Accessors
 
     public List<ApplicationPojo> getApplications() {
-        try {
-            return new ArrayList<>(service.getList().map(applicationToPojo).toCollection());
-        } catch (InterruptedException e) {
-            FacesContext.getCurrentInstance().addMessage(null, serviceUnavailableMsg);
-            return new ArrayList<>();
+        if (applications == null) {
+            applications = getAllApplications();
         }
+        return applications;
+    }
+
+    public Map<String, DomainePojo> getDomains() {
+        if (domains == null) {
+            domains = new HashMap<>();
+            try {
+                final fj.data.List<DomaineDTO> dtoList = domaineService.getList();
+                for (DomaineDTO dto : dtoList) {
+                    domains.put(dto.getCode(), Transform.domaineToPojo.f(dto, ((CustomTreeNode<DomaineDTO>) getTreeNode()).getSelf().flatten().toList()));
+                }
+            } catch (InterruptedException e) {
+                FacesContext.getCurrentInstance().addMessage(null, serviceUnavailableMsg);
+            }
+        }
+        return domains;
     }
 
     public TreeNode[] getSelectedNodes() {
@@ -303,6 +342,14 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
 
     public String getGroupHelpUrl() {
         return groupHelpUrl;
+    }
+
+    public String getFilterQuery() {
+        return filterQuery;
+    }
+
+    public void setFilterQuery(String filterQuery) {
+        this.filterQuery = filterQuery;
     }
 
     public List<DomainePojo> getSelectedDomaines() {
