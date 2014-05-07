@@ -53,45 +53,42 @@
                 </nav>
                 <div class="row">
                     <div class="col-md-12">
-                        <h:form id="catappform" styleClass="form-horizontal">
-
-                            <pe:ajaxErrorHandler button="#{msgs['ACTION.CLOSE']}" widgetVar="myAjaxErrorHandler">
-                                <div>
-                                    <h2 class="ui-dialog-titlebar" >
-                                        #{msgs['ERROR.BASE.ERROR']} <span style="color: red;">{error-name}</span>
-                                    </h2>
-                                    <div class="ui-dialog-content">
-                                        <p:panel header="#{msgs['ERROR.BASE.INFORMATION']}" toggleable="true">
-                                            <div class="row form-group">
-                                                <h:outputLabel value="#{msgs['ERROR.BASE.CAUSE']}:" styleClass="control-label col-md-2" />
-                                                <div class="col-md-10">
-                                                    <h:outputText value="{error-message}" style="color:navy;" styleClass="form-control-static" />
-                                                </div>
+                        <pe:ajaxErrorHandler button="#{msgs['ACTION.CLOSE']}" widgetVar="myAjaxErrorHandler">
+                            <div>
+                                <h2 class="ui-dialog-titlebar" >
+                                    #{msgs['ERROR.BASE.ERROR']} <span style="color: red;">{error-name}</span>
+                                </h2>
+                                <div class="ui-dialog-content">
+                                    <p:panel header="#{msgs['ERROR.BASE.INFORMATION']}" toggleable="true">
+                                        <div class="row form-group">
+                                            <h:outputLabel value="#{msgs['ERROR.BASE.CAUSE']}:" styleClass="control-label col-md-2" />
+                                            <div class="col-md-10">
+                                                <h:outputText value="{error-message}" style="color:navy;" styleClass="form-control-static" />
                                             </div>
-
-                                            <div class="row form-group">
-                                                <h:outputLabel value="#{msgs['ERROR.BASE.SERVER']}:" styleClass="control-label col-md-2" />
-                                                <div class="col-md-10">
-                                                    <h:outputText value="{error-hostname}" style="color:navy;" styleClass="form-control-static" />
-                                                </div>
-                                            </div>
-                                        </p:panel>
-                                        <p:panel header="#{msgs['ERROR.DETAILS']}" toggleable="true">
-                                            <div style="overflow: auto; height: 300px;">
-                                                {error-stacktrace}
-                                            </div>
-                                        </p:panel>
-
-                                        <div style="text-align: center; padding: 5px;">
-                                            <p:commandButton onclick="window.location.href=window.location.href; return false;" value="#{msgs['ACTION.RELOAD']}"/>
-                                            <p:commandButton onclick="myAjaxErrorHandler.hide(); return false;" value="#{msgs['ACTION.CLOSE']}"/>
                                         </div>
+
+                                        <div class="row form-group">
+                                            <h:outputLabel value="#{msgs['ERROR.BASE.SERVER']}:" styleClass="control-label col-md-2" />
+                                            <div class="col-md-10">
+                                                <h:outputText value="{error-hostname}" style="color:navy;" styleClass="form-control-static" />
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                    <p:panel header="#{msgs['ERROR.DETAILS']}" toggleable="true">
+                                        <div style="overflow: auto; height: 300px;">
+                                            {error-stacktrace}
+                                        </div>
+                                    </p:panel>
+
+                                    <div style="text-align: center; padding: 5px;">
+                                        <p:commandButton onclick="window.location.href=window.location.href; return false;" value="#{msgs['ACTION.RELOAD']}"/>
+                                        <p:commandButton onclick="myAjaxErrorHandler.hide(); return false;" value="#{msgs['ACTION.CLOSE']}"/>
                                     </div>
                                 </div>
-                            </pe:ajaxErrorHandler>
+                            </div>
+                        </pe:ajaxErrorHandler>
 
-                            <ui:insert name="content" />
-                        </h:form>
+                        <ui:insert name="content" />
                     </div>
                 </div>
             </div>

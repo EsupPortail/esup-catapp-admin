@@ -29,7 +29,14 @@ public class Navigation extends HttpConfigurationProvider {
                         .to("/stylesheets/domaines/domaines.xhtml").withInboundCorrection())
 
                 .addRule(Join.path("/applications")
+                        .to("/stylesheets/applications/list.xhtml").withInboundCorrection())
+
+                .addRule(Join.path("/applications/new")
                         .to("/stylesheets/applications/applications.xhtml").withInboundCorrection())
+
+                .addRule(Join.path("/applications/{code}")
+                        .to("/stylesheets/applications/applications.xhtml").withInboundCorrection())
+                .where("code").matches("\\S+")
 
                 .addRule(Join.path("/{expired}")
                         .to("/stylesheets/welcome.xhtml").withInboundCorrection())

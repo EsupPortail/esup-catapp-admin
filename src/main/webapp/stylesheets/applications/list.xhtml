@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/stylesheets/template.xhtml">
+    <ui:define name="content">
+        <h:form id="catappform" styleClass="form-horizontal">
+            <p:outputPanel id="panel" styleClass="panel panel-default" layout="block">
+                <div class="panel-heading">
+                    <div class="h2">
+                        #{msgs['MENU.APPLICATIONS.TITLE']}
+                        <div class="hidden-xs hidden-sm pull-right" style="margin-top:7px">
+                            <p:inputText value="#{applicationController.filterQuery}" placeholder="#{msgs['ACTION.FILTER']}"  autocomplete="false">
+                                <p:ajax event="keyup" update="appList" listener="#{applicationController.filter}" partialSubmit="true" process="@this" />
+                            </p:inputText>
+                            <a href="#{requestContext}/applications/new" class="btn btn-xs btn-default" style="margin-bottom:2px" title="#{msgs['ACTION.ADD']}"><i class="fa fa-plus"/></a>
+                        </div>
+                    </div>
+                </div>
+                <p:outputPanel id="appList" layout="block" styleClass="panel-body">
+                    <ui:fragment rendered="#{not empty applicationController.applications}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th><h:outputText value="#{msgs['MENU.APPLICATIONS.APPLICATION.CODE']}" title="#{msgs['MENU.APPLICATIONS.APPLICATION.CODE']}" /></th>
+                                <th><h:outputText value="#{msgs['MENU.APPLICATIONS.APPLICATION.TITLE']}" title="#{msgs['MENU.APPLICATIONS.APPLICATION.TITLE']}" /></th>
+                                <th><h:outputText value="#{msgs['MENU.APPLICATIONS.APPLICATION.TEXT']}" title="#{msgs['MENU.APPLICATIONS.APPLICATION.TEXT']}" /></th>
+                                <th><h:outputText value="#{msgs['MENU.APPLICATIONS.APPLICATION.URL']}" title="#{msgs['MENU.APPLICATIONS.APPLICATION.URL']}" /></th>
+                                <th><h:outputText value="#{msgs['MENU.APPLICATIONS.APPLICATION.ACTIVATION.SHORT']}" title="#{msgs['MENU.APPLICATIONS.APPLICATION.ACTIVATION']}" /></th>
+                                <th><h:outputText value="#{msgs['MENU.APPLICATIONS.APPLICATION.DOMAINS']}" title="#{msgs['MENU.APPLICATIONS.APPLICATION.DOMAINS']}" /></th>
+                                <th class="hidden-xs hidden-sm"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <ui:repeat value="#{applicationController.applications}" var="app">
+                                <tr>
+                                    <td>#{app.code}</td>
+                                    <td>#{app.titre}</td>
+                                    <td>#{app.libelle}</td>
+                                    <td class="url"><h:outputText value="#{app.url}" title="#{app.url}" /></td>
+                                    <td>#{app.accessibilite ? msgs['MENU.APPLICATIONS.APPLICATION.ACTIVATION.YES'] : msgs['MENU.APPLICATIONS.APPLICATION.ACTIVATION.NO']}</td>
+                                    <td>
+                                        <ui:repeat value="#{app.domaines}" var="d" varStatus="status">
+                                            #{applicationController.domains[d].libelle}<h:outputText value=", " rendered="#{!status.last}"/>
+                                        </ui:repeat>
+                                    </td>
+                                    <td class="hidden-xs hidden-sm"><a href="#{requestContext}/applications/#{app.code}" class="btn btn-xs btn-link" title="#{msgs['ACTION.MODIFY']}"><i class="fa fa-pencil" /></a></td>
+                                </tr>
+                            </ui:repeat>
+                            </tbody>
+                        </table>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{empty applicationController.applications}">
+                        #{msgs['MESSAGE.INFO.NO_RESULT']}
+                    </ui:fragment>
+                </p:outputPanel>
+                <div class="panel-footer"></div>
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>
