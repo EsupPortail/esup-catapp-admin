@@ -46,7 +46,7 @@
                                             #{applicationController.domains[d].libelle}<h:outputText value=", " rendered="#{!status.last}"/>
                                         </ui:repeat>
                                     </td>
-                                    <td class="hidden-xs hidden-sm"><a href="#{requestContext}/applications/#{app.code}" class="btn btn-xs btn-link" title="#{msgs['ACTION.MODIFY']}"><i class="fa fa-pencil" /></a></td>
+                                    <td class="hidden-xs hidden-sm"><a href="#{request.contextPath}/applications/#{app.code}" class="btn btn-xs btn-link" title="#{msgs['ACTION.MODIFY']}"><i class="fa fa-pencil" /></a></td>
                                 </tr>
                             </ui:repeat>
                             </tbody>
