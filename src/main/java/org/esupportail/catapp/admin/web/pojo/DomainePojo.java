@@ -24,6 +24,19 @@ public class DomainePojo {
     
     private List<String> applications = new ArrayList<>();
 
+    public DomainePojo(DomainePojo pojo) {
+        this.code = pojo.getCode();
+        this.parent = Option.fromString(pojo.getParent());
+        this.libelle = pojo.getLibelle();
+        this.domaines = pojo.getDomaines();
+        this.applications = pojo.getApplications();
+    }
+
+    public DomainePojo() {
+
+    }
+
+
     public String getCode() {
         return code;
     }

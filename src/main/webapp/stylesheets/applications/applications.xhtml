@@ -28,7 +28,10 @@
                             <p:inputText id="codeApp" required="true"
                                          value="#{applicationController.pojo.code}"
                                          label="#{msgs['MENU.APPLICATIONS.APPLICATION.CODE']}"
-                                         maxlength="20" size="15" styleClass="form-control input-sm" />
+                                         maxlength="20" size="15" styleClass="form-control input-sm"
+                                         validatorMessage="#{msgs['ERROR.VALIDATION.CODE.FORMAT']}">
+                            <f:validateRegex pattern="\S+" />
+                            </p:inputText>
                             <p:message for="codeApp" display="text" />
                         </div>
                     </div>
@@ -103,7 +106,7 @@
                 </div>
                 <div class="panel-footer clearfix">
                     <div class="pull-right">
-                        <pe:switch value="#{empty applicationController.pojo.code}">
+                        <pe:switch value="#{empty applicationController.originalPojo.code}">
                             <pe:defaultCase>
                                 <!-- Création -->
                                 <p:commandLink value="#{msgs['ACTION.CREATE']}" title="#{msgs['ACTION.CREATE']}" action="#{applicationController.create}"

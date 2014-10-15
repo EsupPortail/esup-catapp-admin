@@ -23,10 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +85,6 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
             facesContext.addMessage("catappform:codeApp", uniqueError);
             return null;
         }
-
         try {
             service.add(applicationToDTO.f(pojo));
             final String summary = resourceBundle.getString("MESSAGE.SUCCESS.ADD.APPLICATION.TITLE");
@@ -135,7 +131,6 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
 
             final FacesMessage facesMessage = new FacesMessage(SEVERITY_INFO, summary, detail);
             facesContext.addMessage(null, facesMessage);
-
             return null;
         } catch (InterruptedException e) {
             facesContext.addMessage(null, serviceUnavailableMsg);
@@ -207,13 +202,12 @@ public class ApplicationController extends AbstractController<ApplicationDTO, Ap
                 }
             }
         }));
-
         if (code != null) {
             if (maybeApp.isNone()) {
                 redirect(APPS_URI);
             }
             this.pojo = maybeApp.some();
-            this.originalPojo = pojo;
+            this.originalPojo = new ApplicationPojo(pojo);
         }
 
     }

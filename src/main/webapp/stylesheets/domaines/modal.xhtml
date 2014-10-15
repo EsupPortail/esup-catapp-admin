@@ -29,7 +29,13 @@
                                 <div class="form-group">
                                     <p:outputLabel for="codeDomaine" styleClass="col-md-2 control-label" value="#{msgs['MENU.DOMAINS.DOMAIN.CODE']}" />
                                     <div class="col-md-10">
-                                        <p:inputText id="codeDomaine" required="true" value="#{domaineController.pojo.code}" label="#{msgs['MENU.DOMAINS.DOMAIN.CODE']}" maxlength="20" size="15" styleClass="form-control input-sm" disabled="#{domaineController.useCase eq 'UPDATE' and empty domaineController.pojo.parent}" />
+                                        <p:inputText id="codeDomaine" required="true" value="#{domaineController.pojo.code}"
+                                                     label="#{msgs['MENU.DOMAINS.DOMAIN.CODE']}"
+                                                     maxlength="20" size="15" styleClass="form-control input-sm"
+                                                     disabled="#{domaineController.useCase eq 'UPDATE' and empty domaineController.pojo.parent}"
+                                                     validatorMessage="#{msgs['ERROR.VALIDATION.CODE.FORMAT']}">
+                                        <f:validateRegex pattern="\S+" />
+                                        </p:inputText>
                                         <p:message for="codeDomaine" display="text" />
                                     </div>
                                 </div>

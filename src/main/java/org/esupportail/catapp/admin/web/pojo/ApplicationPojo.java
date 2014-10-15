@@ -30,6 +30,21 @@ public class ApplicationPojo {
 
     private List<String> domaines = new ArrayList<>();
 
+    public ApplicationPojo(ApplicationPojo pojo) {
+        this.code = pojo.getCode();
+        this.titre = pojo.getTitre();
+        this.libelle = pojo.getLibelle();
+        this.description = pojo.getDescription();
+        this.url = pojo.getUrl();
+        this.groupe = pojo.getGroupe();
+        this.accessibilite = pojo.isAccessibilite();
+        this.domaines = pojo.getDomaines();
+    }
+
+    public ApplicationPojo() {
+
+    }
+
     public String getCode() {
         return code;
     }

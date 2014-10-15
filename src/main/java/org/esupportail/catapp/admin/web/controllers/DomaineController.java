@@ -49,7 +49,7 @@ public class DomaineController extends AbstractController<DomaineDTO, DomainePoj
     public void onSelectNode(final NodeSelectEvent event) {
         final DomaineDTO data = (DomaineDTO) event.getTreeNode().getData();
         this.pojo = domaineToPojo.f(data, ((CustomTreeNode<DomaineDTO>) getTreeNode()).getSelf().flatten().toList());
-        setOriginalPojo(pojo);
+        setOriginalPojo(new DomainePojo(pojo));
         this.parent = none();
     }
 

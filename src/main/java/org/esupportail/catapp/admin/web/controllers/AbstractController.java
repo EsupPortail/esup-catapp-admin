@@ -1,5 +1,6 @@
 package org.esupportail.catapp.admin.web.controllers;
 
+import fj.F;
 import fj.data.Option;
 import fj.data.Stream;
 import fj.data.Tree;
@@ -58,7 +59,7 @@ public abstract class AbstractController<DTO, P> {
 
     abstract String delete();
 
-    abstract  boolean isUnique();
+    abstract boolean isUnique();
 
     protected CustomTreeNode buildTreeNode(final IDomaineService domaineService) {
         try {
